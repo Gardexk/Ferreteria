@@ -26,9 +26,21 @@ def validar_columnas(df):
         raise ValueError(f"El archivo Excel no tiene las columnas requeridas: {faltantes}")
 
 
+def validar_datos(df):
+    print("\nTipos de datos")
+    print(df.dtypes)
+
+    print("\nValores nulos")
+    print(df.isnull().sum())
+
+    print("\nRegistros duplicados")
+    print(df.duplicated().sum())
+
+
 def cargar_datos(ruta_archivo=BASE_DIR / "data" / "ventas.xlsx"):
-    df=pd.read_excel(ruta_archivo)
+    df = pd.read_excel(ruta_archivo)
     validar_columnas(df)
+    validar_datos(df)
 
     print("\nRegistros ")
     print(df.head())

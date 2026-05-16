@@ -11,9 +11,29 @@ def ventas_por_producto(df, mostrar_grafica=True):
         plt.show()
     
 def mejores_clientes(df):
-    clientes=df.groupby("Cliente")["Total"].sum().sort_values(ascending=False)
+    clientes = clientes_con_mayor_gasto(df)
     print("\n Mejores clientes")
     print(clientes.head(10))
+    return clientes
+
+
+def ventas_por_mes(df):
+    ventas = df.groupby("Mes")["Total"].sum().sort_index()
+    print("\nVentas por mes")
+    print(ventas)
+    return ventas
+
+
+def clientes_con_mayor_gasto(df):
+    return df.groupby("Cliente")["Total"].sum().sort_values(ascending=False)
+
+
+def productos_mas_rentables(df):
+    columna = "Ganancia" if "Ganancia" in df.columns else "Total"
+    productos = df.groupby("Producto")[columna].sum().sort_values(ascending=False)
+    print("\nProductos mas rentables")
+    print(productos.head(10))
+    return productos
 
 
 def ventas_por_categoria(df):
@@ -110,8 +130,34 @@ def potenciales_clientes(df, top_n=3):
 
 
 def mostrar_reporte_completo(df):
+    ventas_por_mes(df)
+    ventas_por_producto(df, mostrar_grafica=False)
     ventas_por_categoria(df)
+    mejores_clientes(df)
+    productos_mas_rentables(df)
     producto_mas_vendido(df)
     cliente_que_mas_compra(df)
     categoria_que_mas_genera(df)
     potenciales_clientes(df)
+
+
+def graficar_heatmap_correlacion(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    correlacion = df.corr(numeric_only=True)
+    sns.heatmap(correlacion, annot=True, cmap="viridis")
+    plt.title("Correlacion de variables numericas")
+    plt.tight_layout()
+    plt.show()
+
+
+def graficar_distribucion_ventas(df):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    sns.histplot(df["Total"], kde=True)
+    plt.title("Distribucion de ventas")
+    plt.xlabel("Total")
+    plt.tight_layout()
+    plt.show()
